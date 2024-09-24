@@ -7,21 +7,51 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
+/* this is telling our project to prefer dark mode. As much as I love dark mode, I'd rather develop this for light-mode only. */
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+
+.btn-primary{
+  @apply text-white shadow-md bg-matcha hover:bg-matchaDark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center
+}
+
+.btn-secondary {
+  @apply text-white shadow-md bg-copper hover:bg-copperDark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center
+}
+
+
+input,
+label {
+  @apply block mb-2 text-sm font-medium
+}
+
+input[type='checkbox']{
+  @apply w-4 h-4 accent-matcha border border-gray-300 rounded bg-white shadow-sm
+}
+
+
+input,
+select {
+    @apply shadow-md bg-white border border-matcha text-sm leading-5 rounded-md block w-full;
+}
+
+input:focus,
+select:focus {
+    @apply ring ring-matcha border-matcha outline-2 outline-offset-2;
 }
