@@ -1,0 +1,49 @@
+.nutritionContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #000;
+    width: 400px; /* Adjust the width as needed */
+    background-color: #fff;
+}
+
+.nutritionContainer h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.nutritionInfo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    width: 100%;
+}
+
+.nutritionRow {
+    display: contents;
+}
+
+.nutritionTitle {
+    font-weight: bold;
+}
+
+.nutritionValue {
+    text-align: right;
+}
+
+.indent .nutritionTitle {
+    padding-left: 20px; /* Adjust the indentation as needed */
+}
+
+
+.divider {
+    grid-column: 1 / -1;
+    border: 0;
+    border-top: 1px solid #000;
+    margin: 10px 0;
+}
