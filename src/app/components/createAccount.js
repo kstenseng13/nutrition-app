@@ -1,13 +1,14 @@
-"use client"; // Mark as a Client Component
+"use client";
 
 import { useState } from 'react';
 import useSanitizedInput from '../hooks/useSanitizedInput';
+import { useRouter } from 'next/navigation';
 import { useUser } from '../context/userContext';
-import { useRouter } from 'next/router';
 
 const CreateAccount = () => {
     const router = useRouter();
     const { sanitizeInput } = useSanitizedInput();
+    const { setUser } = useUser();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -35,18 +36,17 @@ const CreateAccount = () => {
 
     const handleChange = (e) => {
         const { name, type, checked, value } = e.target;
-        const sanitizedInput = sanitizeInput(value);
         // Ensure name matches the state properties
         setFormData((prevData) => ({
             ...prevData,
-            [name]: type === 'checkbox' ? checked : sanitizedInput,
+            [name]: type === 'checkbox' ? checked : value,
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-
+        
         const validationError = validateForm();
         if (validationError) {
             setError(validationError);
@@ -54,6 +54,16 @@ const CreateAccount = () => {
         else {
             // Call the API to create the user account (when there's something legit for this)
             try {
+                const sanitizedData = {
+                    ...formData,
+                    firstName: sanitizeInput(formData.firstName),
+                    lastName: sanitizeInput(formData.lastName),
+                    username: sanitizeInput(formData.username),
+                    email: sanitizeInput(formData.email),
+                    password: sanitizeInput(formData.password),
+                    repeatPassword: sanitizeInput(formData.repeatPassword),
+                };
+                
                 // const response = await fetch('/api/createAccount', {
                 //     method: 'POST',
                 //     headers: {
@@ -67,6 +77,8 @@ const CreateAccount = () => {
                 // }
 
                 // Redirect to the user dashboard upon successful submission, or whatever we decide to use.
+                setUser(sanitizedData);
+
                 router.push('/userDashboard');
             } 
             catch (error) {
@@ -76,9 +88,9 @@ const CreateAccount = () => {
     };
 
     return (
-        <form role="form" aria-labelledby="register" onSubmit={handleSubmit}>
+        <form role="form" aria-labelledby="register" onSubmit={handleSubmit} className='w-full'>
             <div>
-                <div className="inline-block mb-5 w-full xl:w-[49%]">
+                <div className="inline-block mb-5 w-full 2xl:w-[49%]">
                     <label htmlFor="firstName">First</label>
                     <input
                         type="text"
@@ -92,7 +104,7 @@ const CreateAccount = () => {
                         onChange={handleChange}
                     />
                 </div>
-                <div className="inline-block mb-5 w-full xl:w-1/2">
+                <div className="inline-block mb-5 w-full 2xl:w-1/2">
                     <label htmlFor="lastName">Last</label>
                     <input
                         type="text"

@@ -1,29 +1,17 @@
-'use client';
-import React, { createContext, useContext, useState } from 'react';
+"use client";
+
+import { createContext, useContext, useState } from "react";
 
 const UserContext = createContext();
 
+export const useUser = () => useContext(UserContext);
+
 export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState({
-        firstName: '',
-        lastName: '',
-        username: '',
-        // Other user properties can be added here
-    });
-
-    const login = (userData) => {
-        setUser(userData); 
-    };
-
-    const logout = () => {
-        setUser(null);
-    };
+    const [user, setUser] = useState(null);
 
     return (
-        <UserContext.Provider value={{ user, login, logout }}>
+        <UserContext.Provider value={{ user, setUser }}>
             {children}
         </UserContext.Provider>
     );
 };
-
-export const useUserContext = () => useContext(UserContext);

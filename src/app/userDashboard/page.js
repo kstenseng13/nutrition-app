@@ -1,20 +1,21 @@
-import { useUserContext } from '../context/userContext';
-import React from 'react';
+"use client";
+
+import { useUser } from '../context/userContext';
 
 const UserDashboard = () => {
-    const { user } = useUserContext(); // Access user context
+    const { user } = useUser();
+
+    if (!user) {
+        return <p>Loading...</p>;  // Handle the case where user data isn't available yet
+    }
 
     return (
         <div>
-            {user ? (
-                <>
-                    <h1>Welcome, {user.user}!</h1>
-                </>
-            ) : (
-                <p>Please log in.</p>
-            )}
+            <h1>Welcome to your dashboard, {user.firstName} {user.lastName}!</h1>
+            <p>Your username: {user.username}</p>
         </div>
     );
 };
 
 export default UserDashboard;
+

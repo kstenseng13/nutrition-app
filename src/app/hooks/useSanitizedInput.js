@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 const useSanitizedInput = () => {
 
     // Whitelist regex of alphanumerics and common punctuation.
-    const whitelist = /^[a-zA-Z0-9\s.,!?'"()@&%$#\-]*$/;
+    const whitelist = /^[a-zA-Z0-9\s.,!?'"()@&%$#\-*]*$/;
 
     const sanitizeInput = (value) => {
         // Oh you want to enter non-whitelisted characters? Womp womp. They're gone.
