@@ -16,15 +16,32 @@ const CreateAccount = () => {
     const [error, setError] = useState('');
 
     const validateForm = () => {
+        const usernameRegex = /^\S+$/; // No spaces in username
+
         if (!formData.firstName || !formData.lastName || !formData.username || !formData.email || !formData.password || !formData.repeatPassword) {
             return 'All fields are required.';
         }
+
+        if (formData.username.length < 5 || formData.username.length > 15) {
+            return 'Username must be between 5 and 15 characters.';
+        }
+
+        if (formData.password.length < 8 || formData.password.length > 16) {
+            return 'Password must be between 8 and 16 characters.';
+        }
+
+        if (!usernameRegex.test(formData.username)) {
+            return 'Username cannot contain spaces.';
+        }
+
         if (formData.password !== formData.repeatPassword) {
             return 'Passwords do not match.';
         }
+
         if (!formData.terms) {
             return 'You must agree to the terms and conditions.';
         }
+
         return '';
     };
 
