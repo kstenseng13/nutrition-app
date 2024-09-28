@@ -1,8 +1,13 @@
 "use client"; // Mark as a Client Component
 
 import { useState } from 'react';
+import useSanitizedInput from '../hooks/useSanitizedInput';
+import { useUser } from '../context/userContext';
+import { useRouter } from 'next/router';
 
 const CreateAccount = () => {
+    const router = useRouter();
+    const { sanitizeInput } = useSanitizedInput();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -30,32 +35,43 @@ const CreateAccount = () => {
 
     const handleChange = (e) => {
         const { name, type, checked, value } = e.target;
+        const sanitizedInput = sanitizeInput(value);
         // Ensure name matches the state properties
         setFormData((prevData) => ({
             ...prevData,
-            [name]: type === 'checkbox' ? checked : value,
+            [name]: type === 'checkbox' ? checked : sanitizedInput,
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+
         const validationError = validateForm();
         if (validationError) {
             setError(validationError);
-        } else {
-            setError('');
-            // Handle form submission (e.g., send data to an API)
-            console.log('Form data submitted:', formData);
-            // Reset form if needed
-            setFormData({
-                firstName: '',
-                lastName: '',
-                username: '',
-                email: '',
-                password: '',
-                repeatPassword: '',
-                terms: false,
-            });
+        } 
+        else {
+            // Call the API to create the user account (when there's something legit for this)
+            try {
+                // const response = await fetch('/api/createAccount', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify(formData),
+                // });
+
+                // if (!response.ok) {
+                //     throw new Error('Failed to create account');
+                // }
+
+                // Redirect to the user dashboard upon successful submission, or whatever we decide to use.
+                router.push('/userDashboard');
+            } 
+            catch (error) {
+                setError(error.message);
+            }
         }
     };
 
