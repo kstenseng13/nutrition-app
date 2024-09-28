@@ -8,7 +8,7 @@ export default function Navbar() {
                 <ul className="flex space-x-4">
                     <li><a href="/login" className="text-white">Login</a></li>
                     <li><a href="/about" className="text-white">About</a></li>
-                    <li><a href="/contact" className="text-white">Contact</a></li>
+                    <li><a href="/settings" className="text-white">Settings</a></li>
                 </ul>
             </div>
         </nav>
