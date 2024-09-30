@@ -9,7 +9,6 @@ export default function Navbar() {
                     <li><a href="/login" className="text-white">Login</a></li>
                     <li><a href="/about" className="text-white">About</a></li>
                     <li><a href="/contact" className="text-white">Contact</a></li>
-                    <li><a href="/logout" className="text-white">Logout</a></li>
                 </ul>
             </div>
         </nav>
