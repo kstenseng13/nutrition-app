@@ -1,14 +1,8 @@
-"use client";
+"use client"; // Mark as a Client Component
 
 import { useState } from 'react';
-import useSanitizedInput from '../hooks/useSanitizedInput';
-import { useRouter } from 'next/navigation';
-import { useUser } from '../context/userContext';
 
 const CreateAccount = () => {
-    const router = useRouter();
-    const { sanitizeInput } = useSanitizedInput();
-    const { setUser } = useUser();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -60,54 +54,32 @@ const CreateAccount = () => {
         }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        setError('');
-        
         const validationError = validateForm();
         if (validationError) {
             setError(validationError);
-        } 
-        else {
-            // Call the API to create the user account (when there's something legit for this)
-            try {
-                const sanitizedData = {
-                    ...formData,
-                    firstName: sanitizeInput(formData.firstName),
-                    lastName: sanitizeInput(formData.lastName),
-                    username: sanitizeInput(formData.username),
-                    email: sanitizeInput(formData.email),
-                    password: sanitizeInput(formData.password),
-                    repeatPassword: sanitizeInput(formData.repeatPassword),
-                };
-                
-                // const response = await fetch('/api/createAccount', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //     },
-                //     body: JSON.stringify(formData),
-                // });
-
-                // if (!response.ok) {
-                //     throw new Error('Failed to create account');
-                // }
-
-                // Redirect to the user dashboard upon successful submission, or whatever we decide to use.
-                setUser(sanitizedData);
-
-                router.push('/userDashboard');
-            } 
-            catch (error) {
-                setError(error.message);
-            }
+        } else {
+            setError('');
+            // Handle form submission (e.g., send data to an API)
+            console.log('Form data submitted:', formData);
+            // Reset form if needed
+            setFormData({
+                firstName: '',
+                lastName: '',
+                username: '',
+                email: '',
+                password: '',
+                repeatPassword: '',
+                terms: false,
+            });
         }
     };
 
     return (
-        <form role="form" aria-labelledby="register" onSubmit={handleSubmit} className='w-full'>
+        <form role="form" aria-labelledby="register" onSubmit={handleSubmit}>
             <div>
-                <div className="inline-block mb-5 w-full 2xl:w-[49%]">
+                <div className="inline-block mb-5 w-full xl:w-[49%]">
                     <label htmlFor="firstName">First</label>
                     <input
                         type="text"
@@ -121,7 +93,7 @@ const CreateAccount = () => {
                         onChange={handleChange}
                     />
                 </div>
-                <div className="inline-block mb-5 w-full 2xl:w-1/2">
+                <div className="inline-block mb-5 w-full xl:w-1/2">
                     <label htmlFor="lastName">Last</label>
                     <input
                         type="text"
@@ -215,7 +187,6 @@ const CreateAccount = () => {
             </button>
             {error && <div className="ml-3 mt-3 text-red-500 inline-block">{error}</div>}
             </div>
-            
         </form>
     );
 };
