@@ -1,6 +1,7 @@
 "use client"; // Mark as a Client Component
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/userContext';
 
 const UserLogin = () => {
     const [formData, setFormData] = useState({
@@ -9,7 +10,12 @@ const UserLogin = () => {
     });
 
     const [error, setError] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
+    const [isLoading, setIsLoading] = useState(true); // Add loading state
+    const { isLoggedIn, login, logout, userData } = useAuth();
+
+    useEffect(() => {
+        setIsLoading(false); // Set loading to false once data is loaded
+    }, [isLoggedIn]);
 
     const validateForm = () => {
         // Check all required fields
@@ -45,16 +51,28 @@ const UserLogin = () => {
             setError(validationError);
         } else {
             setError('');
-            // Simulate successful login
-            setIsLoggedIn(true);
+
+            // Update user data
+            const userData = { username: formData.username, lowFat: false, lowSodium: false };
+
+            // Log user in
+            login(userData);
+
             console.log('Form data submitted:', formData);
         }
     };
 
     const handleLogout = () => {
-        setIsLoggedIn(false);
-        console.log('User logged out');
+        logout();
+        setFormData({
+            username: '',
+            password: ''
+        });
     };
+
+    if (isLoading) {
+        return <div>Loading...</div>; // Show loading message while data is being loaded
+    }
 
     return (
         <div>
@@ -98,7 +116,7 @@ const UserLogin = () => {
                 </form>
             ) : (
                 <div>
-                    <h2>Welcome, {formData.username}!</h2>
+                    <h2>Welcome, {userData.username}!</h2>
                     <button onClick={handleLogout} className="btn-primary inline-block">
                         Logout
                     </button>

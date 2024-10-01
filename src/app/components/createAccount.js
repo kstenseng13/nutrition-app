@@ -1,6 +1,7 @@
 "use client"; // Mark as a Client Component
 
 import { useState } from 'react';
+import { useAuth } from '../context/userContext';
 
 const CreateAccount = () => {
     const [formData, setFormData] = useState({
@@ -10,10 +11,13 @@ const CreateAccount = () => {
         email: '',
         password: '',
         repeatPassword: '',
+        lowFat: false,
+        lowSodium: false,
         terms: false,
     });
 
     const [error, setError] = useState('');
+    const { login } = useAuth();
 
     const validateForm = () => {
         const usernameRegex = /^\S+$/; // No spaces in username
@@ -82,6 +86,14 @@ const CreateAccount = () => {
                 const result = await response.json();
                 console.log('Data saved successfully:', result);
 
+                // Update user data
+                const userData = {username: formData.username, lowFat: formData.lowFat, lowSodium: formData.lowSodium};
+
+                // Log user in
+                login(userData);
+                
+                
+
                 // Reset form if needed
                 setFormData({
                     firstName: '',
@@ -90,8 +102,15 @@ const CreateAccount = () => {
                     email: '',
                     password: '',
                     repeatPassword: '',
+                    lowFat: false,
+                    lowSodium: false,
                     terms: false,
                 });
+
+                //redirect to user page (login for now)
+                window.location.href = '/login';
+                
+
             } catch (error) {
                 console.error('Error submitting form:', error);
                 setError('Something went wrong while submitting the form.');
