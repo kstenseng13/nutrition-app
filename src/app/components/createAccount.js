@@ -54,7 +54,7 @@ const CreateAccount = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const validationError = validateForm();
         if (validationError) {
@@ -63,18 +63,42 @@ const CreateAccount = () => {
             setError('');
             // Handle form submission (e.g., send data to an API)
             console.log('Form data submitted:', formData);
-            // Reset form if needed
-            setFormData({
-                firstName: '',
-                lastName: '',
-                username: '',
-                email: '',
-                password: '',
-                repeatPassword: '',
-                terms: false,
-            });
+
+            try {
+                const response = await fetch('/api/postCreateUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user: formData }),
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    console.error('Error saving data:', data);
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                console.log('Data saved successfully:', result);
+
+                // Reset form if needed
+                setFormData({
+                    firstName: '',
+                    lastName: '',
+                    username: '',
+                    email: '',
+                    password: '',
+                    repeatPassword: '',
+                    terms: false,
+                });
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                setError('Something went wrong while submitting the form.');
+            }
         }
     };
+
 
     return (
         <form role="form" aria-labelledby="register" onSubmit={handleSubmit}>
@@ -183,9 +207,9 @@ const CreateAccount = () => {
             </div>
             <div className='block'>
                 <button type="submit" id="login" name="joinRewards" className="btn-primary inline-block">
-                Create Account
-            </button>
-            {error && <div className="ml-3 mt-3 text-red-500 inline-block">{error}</div>}
+                    Create Account
+                </button>
+                {error && <div className="ml-3 mt-3 text-red-500 inline-block">{error}</div>}
             </div>
         </form>
     );
