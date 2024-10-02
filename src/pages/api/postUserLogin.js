@@ -30,18 +30,22 @@ export default async function handler(req, res) {
             const collection = database.collection("UserData");
 
             const thisusername = user.username;
-            const thisemail = user.email;
+            const thispassword = user.password;
 
             // Check if the username or email already exists
-            const existingUser = await collection.findOne({ $or: [{ "user.username": thisusername }, { "user.email": thisemail }] });
+            const existingUser = await collection.findOne({ $and: [{ "user.username": thisusername }, { "user.password": thispassword }] });
 
-            if (existingUser) {
-                return res.status(409).json({ message: "Username or email already exists!" });
+            if(!existingUser){
+                return res.status(404).json({ message: "User not found!" });
             }
 
-            await collection.insertOne({ user });
+            //print out the existing user
+            //console.log("existing user", existingUser.user.username, existingUser.user.lowFat, existingUser.user.lowSodium);
 
-            res.status(201).json({ message: "User saved successfully!" });
+            const userData = {username: existingUser.user.username, lowFat: existingUser.user.lowFat, lowSodium: existingUser.user.lowSodium};
+
+            res.status(200).json({ message: "User found successfully!", userData });
+
         } catch (error) {
             console.error("Error connecting to MongoDB:", error);
             res.status(500).json({ message: "Something went wrong!" });

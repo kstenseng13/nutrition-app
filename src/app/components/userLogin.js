@@ -44,7 +44,7 @@ const UserLogin = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const validationError = validateForm();
         if (validationError) {
@@ -52,13 +52,34 @@ const UserLogin = () => {
         } else {
             setError('');
 
-            // Update user data
-            const userData = { username: formData.username, lowFat: false, lowSodium: false };
+            try {
+                const response = await fetch('/api/postUserLogin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user: formData }),
+                });
 
-            // Log user in
-            login(userData);
+                const resp = await response.json();
 
-            console.log('Form data submitted:', formData);
+                const _username = resp.userData.username;
+                const _lowFat = resp.userData.lowFat;
+                const _lowSodium = resp.userData.lowSodium;
+
+                const _userData = { username: _username, lowFat: _lowFat, lowSodium: _lowSodium };
+    
+                console.log('User data:', _userData);
+    
+                // Log user in
+                login(_userData);
+    
+                console.log('Form data submitted:', formData);
+
+            } catch (error) {
+                console.error('Error:', error);
+                setError('An error occurred. Please try again.');
+            }
         }
     };
 
