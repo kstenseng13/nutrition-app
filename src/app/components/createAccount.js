@@ -69,12 +69,25 @@ const CreateAccount = () => {
             console.log('Form data submitted:', formData);
 
             try {
+
+                //create new user object that does not include repeat password to send to server
+                let newUserData = {
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    username: formData.username,
+                    email: formData.email,
+                    password: formData.password,
+                    lowFat: formData.lowFat,
+                    lowSodium: formData.lowSodium,
+                    terms: formData.terms
+                };
+
                 const response = await fetch('/api/postCreateUser', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ user: formData }),
+                    body: JSON.stringify({ user: newUserData }),
                 });
 
                 if (!response.ok) {
@@ -87,8 +100,8 @@ const CreateAccount = () => {
                     throw new Error('Network response was not ok');
                 }
 
-                const result = await response.json();
-                console.log('Data saved successfully:', result);
+                // const result = await response.json();
+                // console.log('Data saved successfully:', result);
 
                 // Update user data
                 const userData = {username: formData.username, lowFat: formData.lowFat, lowSodium: formData.lowSodium};

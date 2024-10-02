@@ -39,9 +39,14 @@ export default async function handler(req, res) {
                 return res.status(409).json({ message: "Username or email already exists!" });
             }
 
-            await collection.insertOne({ user });
-
-            res.status(201).json({ message: "User saved successfully!" });
+            const dbResponse = await collection.insertOne({ user });
+            if (dbResponse.acknowledged !== true) {
+                return res.status(500).json({ message: "User not saved!" });
+            }
+            else{
+                console.log("Data saved successfully:", dbResponse);
+                res.status(201).json({ message: "User saved successfully!" });
+            }
         } catch (error) {
             console.error("Error connecting to MongoDB:", error);
             res.status(500).json({ message: "Something went wrong!" });

@@ -61,8 +61,21 @@ const UserLogin = () => {
                     body: JSON.stringify({ user: formData }),
                 });
 
-                const resp = await response.json();
 
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    console.error('Error getting data:', data);
+                    if (response.status === 404) {
+                        setError('Invalid username or password');
+                        return;
+                    } 
+                    throw new Error('Network response was not ok');
+                }
+
+
+                const resp = await response.json();
+                
                 const _username = resp.userData.username;
                 const _lowFat = resp.userData.lowFat;
                 const _lowSodium = resp.userData.lowSodium;
