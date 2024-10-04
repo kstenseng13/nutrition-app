@@ -57,9 +57,11 @@ const UserLogin = () => {
     };
 
     return (
-        <div>
+
+    
+        <div className="mx-auto">
             {!isLoggedIn ? (
-                <form role="form" aria-labelledby="login" onSubmit={handleSubmit}>
+                <form role="form" aria-labelledby="login" onSubmit={handleSubmit} >
                     <div className="mb-5">
                         <label htmlFor="username">Username</label>
                         <input
@@ -97,14 +99,18 @@ const UserLogin = () => {
                     </div>
                 </form>
             ) : (
-                <div>
+                <div className='text-center'>
+                    
                     <h2>Welcome, {formData.username}!</h2>
+                    <br></br>
+                    <br></br>
                     <button onClick={handleLogout} className="btn-primary inline-block">
                         Logout
                     </button>
                 </div>
             )}
         </div>
+        
     );
 };
 
