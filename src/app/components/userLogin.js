@@ -101,7 +101,7 @@ const UserLogin = () => {
             ) : (
                 <div className='text-center'>
                     
-                    <h2>Welcome, {formData.username}!</h2>
+                    <h2>Welcome, {userData.username}!</h2>
                     <br></br>
                     <br></br>
                     <button onClick={handleLogout} className="btn-primary inline-block">
