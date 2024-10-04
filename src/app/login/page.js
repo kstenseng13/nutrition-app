@@ -1,7 +1,14 @@
+"use client";
+
 import Link from 'next/link';
 import UserLogin from '../components/userLogin';
+import { useAuth } from '../context/userContext';
 
 export default function Home() {
+
+    const { isLoggedIn } = useAuth();
+
+
     return (
         <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 text-center">
             
@@ -15,7 +22,11 @@ export default function Home() {
             </div>       
 
             <br></br>
-            <Link href='/register'><button className="btn-primary">Create Account</button></Link>
+            {!isLoggedIn ? (
+                <Link href='/register'><button className="btn-primary">Create Account</button></Link>
+            ) : (
+                <div></div>
+            )}
         </div>
     );
 }
