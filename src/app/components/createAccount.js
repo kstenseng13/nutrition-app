@@ -10,6 +10,8 @@ const CreateAccount = () => {
         email: '',
         password: '',
         repeatPassword: '',
+        lowFat: false,
+        lowSodium: false,
         terms: false,
     });
 
@@ -75,6 +77,8 @@ const CreateAccount = () => {
                 email: '',
                 password: '',
                 repeatPassword: '',
+                lowFat: false,
+                lowSodium: false,
                 terms: false,
             });
         }
