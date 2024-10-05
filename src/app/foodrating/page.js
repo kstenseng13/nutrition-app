@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation'; // For retrieving query param
 import { useEffect, useState } from 'react';
 import FoodDetails from '../components/foodDetails';
 import NutritionLabel from '../data/nutritionlabel';
+import { useAuth } from '../context/userContext';
 
 export default function FoodRatingPage() {
   const searchParams = useSearchParams();
@@ -11,6 +12,7 @@ export default function FoodRatingPage() {
   const [ratingColor, setRatingColor] = useState('');
   const [ratingText, setRatingText] = useState('');
   const [foodName, setFoodName] = useState();
+  const { userData } = useAuth();
 
   //food nutrition details
   const [foodData, setFoodData] = useState(null);
@@ -43,6 +45,9 @@ export default function FoodRatingPage() {
       else {
         console.log('Food Data:', _returnedData);
         //pull out the nutrition data from the response and set the state
+
+        setFoodName(_returnedData.product.product_name);
+
         const nutritionData = {
           servingSize: _returnedData.product.serving_size,
           // servingsPerContainer: _returnedData.product.servings_per_container, // Uncomment if available
@@ -98,7 +103,7 @@ export default function FoodRatingPage() {
       <h1>Food Rating Results</h1>
 
       {/* Display UPC for debugging purposes */}
-      <p>{upc} {foodName} Rates:</p>
+      <p>{upc} / {foodName} / Rates:</p>
 
       {/* Rating Box */}
       <div
