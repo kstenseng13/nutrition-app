@@ -46,6 +46,10 @@ const CreateAccount = () => {
             return 'You must agree to the terms and conditions.';
         }
 
+        if (!formData.lowFat && !formData.lowSodium) {
+            return 'Please pick you dietary restriction.';
+        }
+
         return '';
     };
 
@@ -224,7 +228,50 @@ const CreateAccount = () => {
                     onChange={handleChange}
                 />
             </div>
+
+            <div>
+                <label className="ms-2 text-sm font-medium">
+                    {/* add selections to user profile? */}
+                    Select your Dietary Restrictions:
+                </label>
+                
+                
+                <div className="flex items-start mb-5">
+                
+                    <div className="flex justify-center">
+                        <input
+                            id="lowSodium"
+                            name="lowSodium"
+                            type="checkbox"
+                            //required
+                            aria-required="true"
+                            checked={formData.lowSodium}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="lowSodium" className="ms-2 text-sm font-medium">
+                            {/* add selections to user profile? */}
+                            Low-Sodium
+                        </label>
+                    </div>
+                    <div className="flex justify-center ml-8">
+                    <input
+                            id="lowFat"
+                            name="lowFat"
+                            type="checkbox"
+                            //required
+                            aria-required="true"
+                            checked={formData.lowFat}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="lowFat" className="ms-2 text-sm font-medium ml-4">
+                        {/* add selections to user profile? */}
+                            Low-Fat
+                        </label>
+                    </div>
+            </div> 
+
             <div className="flex items-start mb-5">
+            
                 <div className="flex items-center h-5">
                     <input
                         id="terms"
@@ -235,13 +282,15 @@ const CreateAccount = () => {
                         checked={formData.terms}
                         onChange={handleChange}
                     />
-                </div>
-                <label htmlFor="terms" className="ms-2 text-sm font-medium">
+                    <label htmlFor="terms" className="ms-2 text-sm font-medium">
                     {/* make this direct to a terms and condition page eventually */}
                     I agree with the <a href="/register" className="text-linkBlue hover:underline hover:text-gunmetal">terms and conditions</a>
-                </label>
+                    </label>
+                </div>
             </div>
-            <div className='block'>
+                
+            </div>
+            <div className='block text-center'>
                 <button type="submit" id="login" name="joinRewards" className="btn-primary inline-block">
                     Create Account
                 </button>
