@@ -1,42 +1,38 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // For navigation
-import { useUser } from '../context/userContext';  // Import the user context
+import { useRouter } from 'next/navigation'; 
+import { useUser } from '../context/userContext';  // Import user context
 
 export default function FoodCheckPage() {
-  const [upc, setUpc] = useState(''); // UPC input state
-  const [error, setError] = useState(null);  // Error state for UPC validation
-  const [selectedOption, setSelectedOption] = useState(''); // Dropdown selection state
-  const { user, setUser } = useUser();  // Access user context
-  const router = useRouter(); // Initialize router for navigation
+  const [upc, setUpc] = useState(''); 
+  const [error, setError] = useState(null);  
+  const [selectedOption, setSelectedOption] = useState(''); 
+  const { userData, isLoggedIn, login } = useUser();  // Access user context
+  const router = useRouter(); 
 
-  // Simulate a user login on first load
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setSelectedOption(parsedUser.dietarySelection || '');
+  // Set initial dietary selection from userData if logged in
+  useEffect(() => {    
+    if (isLoggedIn) {
+      // Determine which option to select based on userData's Boolean values
+      if (userData.lowFat) {
+        setSelectedOption('Low Fat');
+      } else if (userData.lowSodium) {
+        setSelectedOption('Low Sodium');
+      } else {
+        setSelectedOption(''); // No selection if both are false
+      }
     } else {
-      const simulatedUser = {
-        name: "Simulated User",
-        dietarySelection: "Low Fat"
-      };
-      setUser(simulatedUser);
-      setSelectedOption(simulatedUser.dietarySelection);
-      localStorage.setItem('user', JSON.stringify(simulatedUser));
+      setSelectedOption(''); // Show default "Select a diet" if not logged in or no selection exists
     }
-  }, [setUser]);
+  }, [isLoggedIn, userData]);
 
   // Handle UPC input change
   const handleChange = (event) => {
     const value = event.target.value;
-
     if (/^[0-9]{0,13}$/.test(value)) {
       setUpc(value);
-      setError(''); // Clear error if valid
+      setError(''); 
     } else {
       setError('UPC code must only contain up to 13 digits. No other characters are allowed.');
     }
@@ -46,35 +42,65 @@ export default function FoodCheckPage() {
   const handleDropdownChange = (event) => {
     const newSelection = event.target.value;
     setSelectedOption(newSelection);
-
-    if (user) {
-      const updatedUser = {
-        ...user,
-        dietarySelection: newSelection
-      };
-      setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser)); // Persist updated user info
-    }
   };
 
-  // Handle form submission (validates UPC code length and processes UPC + diet)
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    console.log('Submitting form...'); // Debug log
+
     if (upc) {
-      setError(null);  // Clear any errors if input is valid
-      console.log(`UPC: ${upc}, Diet: ${selectedOption}`);
-      router.push(`/foodrating?upc=${upc}`);  // Navigate to the FoodRatings page
+      setError(null);  
+
+      console.log('isLoggedIn:', isLoggedIn);
+      console.log('userData:', userData);
+      console.log('selectedOption:', selectedOption);
+
+
+      // If user is logged in, update the corresponding dietary preference
+      if (isLoggedIn) {
+        const updatedUser = {
+          username: userData.username,  // Ensure you're getting the username from userData
+          lowFat: selectedOption === 'Low Fat',
+          lowSodium: selectedOption === 'Low Sodium',
+        };
+        console.log('Updated user data:', updatedUser); // Debug log
+
+        // Update the user context with the new dietary selection
+        login(updatedUser);  // This updates the context and sessionStorage
+
+        try {
+          // Make the PUT request to update dietary preferences in the database
+          const response = await fetch('/api/putUpdateUser', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedUser),
+          });
+  
+          if (!response.ok) {
+            throw new Error('Failed to update dietary preferences');
+          }
+  
+          const data = await response.json();
+          console.log(data.message); // Log success message or handle it as needed
+        } catch (error) {
+          console.error(error.message);
+          setError('Error updating dietary preferences: ' + error.message);
+        }
+      }
+      router.push(`/foodrating?upc=${upc}`);  // Route to the food rating page
     }
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
       <h1 style={{ textAlign: 'center', fontSize: '32px', marginBottom: '20px' }}>UPC Food Check</h1>
-  
-      {/* UPC Code Entry Form */}
-      <div style={{ position: 'relative', textAlign: 'center', width: '300px' }}> {/* Container with fixed width */}
+
+      <div style={{ position: 'relative', textAlign: 'center', width: '300px' }}> 
         <p style={{ fontSize: '18px', marginBottom: '10px', marginTop: '20px', textAlign: 'left', width: '300px' }}>Enter UPC Code</p>
-        {/* Form containing both the input and button */}
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -82,13 +108,12 @@ export default function FoodCheckPage() {
             onChange={handleChange}
             placeholder="Enter UPC code"
             maxLength="13"
-            style={{ padding: '10px', width: '100%', marginBottom: '10px' }}  // Keep input width fixed
+            style={{ padding: '10px', width: '100%', marginBottom: '10px' }}
           />
           <div style={{ width: '100%', textAlign: 'left', color: 'red' }}>
             {error && <p style={{ margin: 0, wordWrap: 'break-word' }}>{error}</p>}
           </div>
-  
-          {/* Dietary selection dropdown */}
+
           <p style={{ fontSize: '18px', marginBottom: '10px', marginTop: '20px', textAlign: 'left', width: '300px' }}>Select Your Diet</p>
           <select
             value={selectedOption}
@@ -98,10 +123,9 @@ export default function FoodCheckPage() {
             <option value="Low Fat">Low Fat</option>
             <option value="Low Sodium">Low Sodium</option>
           </select>
-  
-          {/* Submit button to check the food (must be inside the form) */}
+
           <button
-            type="submit"  // Set the type to "submit" to trigger form submission
+            type="submit"  
             style={{ padding: '10px 20px', marginTop: '20px' }}>
             Check the Food!
           </button>
