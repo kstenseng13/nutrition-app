@@ -4,7 +4,7 @@ export default function Navbar() {
     return (
         <nav className="bg-gunmetal p-4">
             <div className="container mx-auto flex justify-between">
-                <a href="/" className="text-white text-lg font-bold">Nutrition App</a>
+                <a href="/upcentry" className="text-white text-lg font-bold">Nutrition App</a>
                 <ul className="flex space-x-4">
                     <li><a href="/login" className="text-white">Login</a></li>
                     <li><a href="/about" className="text-white">About</a></li>
@@ -14,3 +14,5 @@ export default function Navbar() {
         </nav>
     );
 }
+
+
