@@ -1,6 +1,7 @@
 "use client"; // Mark as a Client Component
 
 import { useState } from 'react';
+import { useAuth } from '../context/userContext';
 
 const CreateAccount = () => {
     const [formData, setFormData] = useState({
@@ -10,10 +11,13 @@ const CreateAccount = () => {
         email: '',
         password: '',
         repeatPassword: '',
+        lowFat: false,
+        lowSodium: false,
         terms: false,
     });
 
     const [error, setError] = useState('');
+    const { login } = useAuth();
 
     const validateForm = () => {
         const usernameRegex = /^\S+$/; // No spaces in username
@@ -42,6 +46,10 @@ const CreateAccount = () => {
             return 'You must agree to the terms and conditions.';
         }
 
+        if (!formData.lowFat && !formData.lowSodium) {
+            return 'Please pick you dietary restriction.';
+        }
+
         return '';
     };
 
@@ -54,7 +62,7 @@ const CreateAccount = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const validationError = validateForm();
         if (validationError) {
@@ -63,18 +71,74 @@ const CreateAccount = () => {
             setError('');
             // Handle form submission (e.g., send data to an API)
             console.log('Form data submitted:', formData);
-            // Reset form if needed
-            setFormData({
-                firstName: '',
-                lastName: '',
-                username: '',
-                email: '',
-                password: '',
-                repeatPassword: '',
-                terms: false,
-            });
+
+            try {
+
+                //create new user object that does not include repeat password to send to server
+                let newUserData = {
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    username: formData.username,
+                    email: formData.email,
+                    password: formData.password,
+                    lowFat: formData.lowFat,
+                    lowSodium: formData.lowSodium,
+                    terms: formData.terms
+                };
+
+                const response = await fetch('/api/postCreateUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user: newUserData }),
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    console.error('Error saving data:', data);
+                    if (response.status === 409) {
+                        setError('Username or email already exists.');
+                        return;
+                    }
+                    throw new Error('Network response was not ok');
+                }
+
+                // const result = await response.json();
+                // console.log('Data saved successfully:', result);
+
+                // Update user data
+                const userData = {username: formData.username, lowFat: formData.lowFat, lowSodium: formData.lowSodium};
+
+                // Log user in
+                login(userData);
+                
+                
+
+                // Reset form if needed
+                setFormData({
+                    firstName: '',
+                    lastName: '',
+                    username: '',
+                    email: '',
+                    password: '',
+                    repeatPassword: '',
+                    lowFat: false,
+                    lowSodium: false,
+                    terms: false,
+                });
+
+                //redirect to user page (login for now)
+                window.location.href = '/login';
+                
+
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                setError('Something went wrong while submitting the form.');
+            }
         }
     };
+
 
     return (
         <form role="form" aria-labelledby="register" onSubmit={handleSubmit}>
@@ -164,7 +228,50 @@ const CreateAccount = () => {
                     onChange={handleChange}
                 />
             </div>
+
+            <div>
+                <label className="ms-2 text-sm font-medium">
+                    {/* add selections to user profile? */}
+                    Select your Dietary Restrictions:
+                </label>
+                
+                
+                <div className="flex items-start mb-5">
+                
+                    <div className="flex justify-center">
+                        <input
+                            id="lowSodium"
+                            name="lowSodium"
+                            type="checkbox"
+                            //required
+                            aria-required="true"
+                            checked={formData.lowSodium}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="lowSodium" className="ms-2 text-sm font-medium">
+                            {/* add selections to user profile? */}
+                            Low-Sodium
+                        </label>
+                    </div>
+                    <div className="flex justify-center ml-8">
+                    <input
+                            id="lowFat"
+                            name="lowFat"
+                            type="checkbox"
+                            //required
+                            aria-required="true"
+                            checked={formData.lowFat}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="lowFat" className="ms-2 text-sm font-medium ml-4">
+                        {/* add selections to user profile? */}
+                            Low-Fat
+                        </label>
+                    </div>
+            </div> 
+
             <div className="flex items-start mb-5">
+            
                 <div className="flex items-center h-5">
                     <input
                         id="terms"
@@ -175,17 +282,19 @@ const CreateAccount = () => {
                         checked={formData.terms}
                         onChange={handleChange}
                     />
-                </div>
-                <label htmlFor="terms" className="ms-2 text-sm font-medium">
+                    <label htmlFor="terms" className="ms-2 text-sm font-medium">
                     {/* make this direct to a terms and condition page eventually */}
                     I agree with the <a href="/register" className="text-linkBlue hover:underline hover:text-gunmetal">terms and conditions</a>
-                </label>
+                    </label>
+                </div>
             </div>
-            <div className='block'>
+                
+            </div>
+            <div className='block text-center'>
                 <button type="submit" id="login" name="joinRewards" className="btn-primary inline-block">
-                Create Account
-            </button>
-            {error && <div className="ml-3 mt-3 text-red-500 inline-block">{error}</div>}
+                    Create Account
+                </button>
+                {error && <div className="ml-3 mt-3 text-red-500 inline-block">{error}</div>}
             </div>
         </form>
     );

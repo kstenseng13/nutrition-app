@@ -1,6 +1,7 @@
 "use client"; // Mark as a Client Component
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/userContext';
 
 const UserLogin = () => {
     const [formData, setFormData] = useState({
@@ -9,7 +10,12 @@ const UserLogin = () => {
     });
 
     const [error, setError] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
+    const [isLoading, setIsLoading] = useState(true); // Add loading state
+    const { isLoggedIn, login, logout, userData } = useAuth();
+
+    useEffect(() => {
+        setIsLoading(false); // Set loading to false once data is loaded
+    }, [isLoggedIn]);
 
     const validateForm = () => {
         // Check all required fields
@@ -38,28 +44,76 @@ const UserLogin = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const validationError = validateForm();
         if (validationError) {
             setError(validationError);
         } else {
             setError('');
-            // Simulate successful login
-            setIsLoggedIn(true);
-            console.log('Form data submitted:', formData);
+
+            try {
+                const response = await fetch('/api/postUserLogin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user: formData }),
+                });
+
+
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    console.error('Error getting data:', data);
+                    if (response.status === 404) {
+                        setError('Invalid username or password');
+                        return;
+                    } 
+                    throw new Error('Network response was not ok');
+                }
+
+
+                const resp = await response.json();
+                
+                const _username = resp.userData.username;
+                const _lowFat = resp.userData.lowFat;
+                const _lowSodium = resp.userData.lowSodium;
+
+                const _userData = { username: _username, lowFat: _lowFat, lowSodium: _lowSodium };
+    
+                console.log('User data:', _userData);
+    
+                // Log user in
+                login(_userData);
+    
+                console.log('Form data submitted:', formData);
+
+            } catch (error) {
+                console.error('Error:', error);
+                setError('An error occurred. Please try again.');
+            }
         }
     };
 
     const handleLogout = () => {
-        setIsLoggedIn(false);
-        console.log('User logged out');
+        logout();
+        setFormData({
+            username: '',
+            password: ''
+        });
     };
 
+    if (isLoading) {
+        return <div>Loading...</div>; // Show loading message while data is being loaded
+    }
+
     return (
-        <div>
+
+    
+        <div className="mx-auto">
             {!isLoggedIn ? (
-                <form role="form" aria-labelledby="login" onSubmit={handleSubmit}>
+                <form role="form" aria-labelledby="login" onSubmit={handleSubmit} >
                     <div className="mb-5">
                         <label htmlFor="username">Username</label>
                         <input
@@ -97,14 +151,20 @@ const UserLogin = () => {
                     </div>
                 </form>
             ) : (
-                <div>
-                    <h2>Welcome, {formData.username}!</h2>
+
+                <div className='text-center'>
+                    
+                    <h2>Welcome, {userData.username}!</h2>
+                    <br></br>
+                    <br></br>
+
                     <button onClick={handleLogout} className="btn-primary inline-block">
                         Logout
                     </button>
                 </div>
             )}
         </div>
+        
     );
 };
 

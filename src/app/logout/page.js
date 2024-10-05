@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import Logout from '../components/logout';
-//import Logout from '../components/Logout';
+//import Logout from '../components/logout';
 
 export default function Home() {
     return (
