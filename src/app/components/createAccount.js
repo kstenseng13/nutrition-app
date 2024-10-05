@@ -46,7 +46,7 @@ const CreateAccount = () => {
             return 'You must agree to the terms and conditions.';
         }
 
-        if (!formData.lowFat || !formData.lowSodium) {
+        if (!formData.lowFat && !formData.lowSodium) {
             return 'Please pick you dietary restriction.';
         }
 
