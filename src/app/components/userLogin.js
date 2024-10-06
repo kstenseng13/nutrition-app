@@ -143,7 +143,7 @@ const UserLogin = () => {
                         />
                     </div>
 
-                    <div className='block'>
+                    <div className='block text-center'>
                         <button type="submit" id="login" name="login" className="btn-primary inline-block">
                             Login
                         </button>
