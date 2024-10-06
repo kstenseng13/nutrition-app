@@ -97,13 +97,25 @@ const UserLogin = () => {
     };
 
     const handleLogout = () => {
-        logout();
-        setFormData({
-            username: '',
-            password: ''
-        });
+        // Show confirmation dialog and proceed only if the user confirms
+        const confirmLogout = window.confirm("Are you sure you want to logout?");
+        
+        if (confirmLogout) {
+            // Call the logout function if the user confirms
+            logout();
+    
+            // Reset the form data
+            setFormData({
+                username: '',
+                password: ''
+            });
+    
+            console.log('User logged out');
+        } else {
+            console.log('Logout cancelled');
+        }
     };
-
+    
     if (isLoading) {
         return <div>Loading...</div>; // Show loading message while data is being loaded
     }
