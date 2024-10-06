@@ -50,7 +50,7 @@ export default function FoodCheckPage() {
 
     if (upc) {
       setError(null);  
-      router.push(`/foodrating?upc=${upc}`);  // Route to the food rating page
+      router.push(`/foodrating?upc=${upc}&diet=${selectedOption}`);  // Route to the food rating page
     }
   };
 

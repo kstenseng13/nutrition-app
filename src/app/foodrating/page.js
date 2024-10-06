@@ -3,12 +3,14 @@
 import { useSearchParams } from 'next/navigation'; // For retrieving query parameters
 import { useEffect, useState } from 'react';
 import FoodDetails from '../components/foodDetails';
+import RatingComp from '../components/ratingcomp';
 import NutritionLabel from '../data/nutritionlabel';
 import { useAuth } from '../context/userContext';
 
 export default function FoodRatingPage() {
   const searchParams = useSearchParams();
   const [upc, setUpc] = useState(null);
+  const [diet, setDiet] = useState(null);
   const [ratingColor, setRatingColor] = useState('');
   const [ratingText, setRatingText] = useState('');
   const [foodName, setFoodName] = useState();
@@ -22,6 +24,11 @@ export default function FoodRatingPage() {
     const fetchData = async () => {
       const upcValue = searchParams.get('upc');
       setUpc(upcValue);
+
+      //dietValue should be "Low Fat" or "Low Sodium" coming from the upcEntry page
+      //pass this into the rating calculation alrogithm
+      const dietValue = searchParams.get('diet');
+      setDiet(dietValue);
 
       //make api request to get food rating
 
@@ -38,9 +45,11 @@ export default function FoodRatingPage() {
 
       if (_returnedData === null) {
         console.error('Null: No data found for UPC:', upcValue);
+        setFoodName("Food Not Found");
       }
       else if (_returnedData.status === 'failure') {
         console.error('Fail: No data found for UPC:', upcValue);
+        setFoodName("Food Not Found");
       }
       else {
         console.log('Food Data:', _returnedData);
@@ -71,6 +80,10 @@ export default function FoodRatingPage() {
         console.log('Nutrition Data:', nutritionData);
 
         setFoodData(new NutritionLabel(nutritionData));
+
+        //values from the nutrition data for the rating algorithm
+        console.log('Sodium:', nutritionData.sodium);
+        console.log('Total Fat:', nutritionData.totalFat);
 
       }
 
@@ -103,14 +116,17 @@ export default function FoodRatingPage() {
       <h1>Food Rating Results</h1>
 
       {/* Display UPC for debugging purposes */}
-      <p>{upc} / {foodName} / Rates:</p>
+      <br />
+      <h4>UPC: {upc}</h4>
+      <h4>{foodName}</h4>
+      <h4>Rating for Diet: {diet}</h4>
 
       {/* Rating Box */}
-      <div className="w-[300px] h-[200px] my-5 mx-auto flex justify-center items-center text-2xl text-black rounded-lg" style={{ backgroundColor: ratingColor }}>
-        {ratingText}
-      </div>
+      <RatingComp color= {ratingColor} text={ratingText} />
+
       {/* Nutrition Details */}
       <FoodDetails label={foodData} />
+
       <div className='pt-8'>
         <a href="/upcEntry" className='btn-primary'>Rate Another</a>
       </div>
