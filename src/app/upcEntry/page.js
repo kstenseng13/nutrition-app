@@ -1,42 +1,38 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // For navigation
-import { useUser } from '../context/userContext';  // Import the user context
+import { useRouter } from 'next/navigation'; 
+import { useUser } from '../context/userContext';  // Import user context
 
 export default function FoodCheckPage() {
-  const [upc, setUpc] = useState(''); // UPC input state
-  const [error, setError] = useState(null);  // Error state for UPC validation
-  const [selectedOption, setSelectedOption] = useState(''); // Dropdown selection state
-  const { user, setUser } = useUser();  // Access user context
-  const router = useRouter(); // Initialize router for navigation
+  const [upc, setUpc] = useState(''); 
+  const [error, setError] = useState(null);  
+  const [selectedOption, setSelectedOption] = useState(''); 
+  const { userData, isLoggedIn, login } = useUser();  // Access user context
+  const router = useRouter(); 
 
-  // Simulate a user login on first load
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setSelectedOption(parsedUser.dietarySelection || '');
+  // Set initial dietary selection from userData if logged in
+  useEffect(() => {    
+    if (isLoggedIn) {
+      // Determine which option to select based on userData's Boolean values
+      if (userData.lowFat) {
+        setSelectedOption('Low Fat');
+      } else if (userData.lowSodium) {
+        setSelectedOption('Low Sodium');
+      } else {
+        setSelectedOption(''); // No selection if both are false
+      }
     } else {
-      const simulatedUser = {
-        name: "Simulated User",
-        dietarySelection: "Low Fat"
-      };
-      setUser(simulatedUser);
-      setSelectedOption(simulatedUser.dietarySelection);
-      localStorage.setItem('user', JSON.stringify(simulatedUser));
+      setSelectedOption(''); // Show default "Select a diet" if not logged in or no selection exists
     }
-  }, [setUser]);
+  }, [isLoggedIn, userData]);
 
   // Handle UPC input change
   const handleChange = (event) => {
     const value = event.target.value;
-
     if (/^[0-9]{0,13}$/.test(value)) {
       setUpc(value);
-      setError(''); // Clear error if valid
+      setError(''); 
     } else {
       setError('UPC code must only contain up to 13 digits. No other characters are allowed.');
     }
@@ -46,24 +42,15 @@ export default function FoodCheckPage() {
   const handleDropdownChange = (event) => {
     const newSelection = event.target.value;
     setSelectedOption(newSelection);
-
-    if (user) {
-      const updatedUser = {
-        ...user,
-        dietarySelection: newSelection
-      };
-      setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser)); // Persist updated user info
-    }
   };
 
-  // Handle form submission (validates UPC code length and processes UPC + diet)
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (upc) {
-      setError(null);  // Clear any errors if input is valid
-      console.log(`UPC: ${upc}, Diet: ${selectedOption}`);
-      router.push(`/foodrating?upc=${upc}`);  // Navigate to the FoodRatings page
+      setError(null);  
+      router.push(`/foodrating?upc=${upc}`);  // Route to the food rating page
     }
   };
 
