@@ -10,23 +10,26 @@ export default function Home() {
 
 
     return (
-        <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 text-center">
-            
-            <h2 className='-ml-20 text-2xl'>UserLogin:</h2>
-
-            <br></br>
-            <br></br>
-            
-            <div className='flex'>
-                <UserLogin />
-            </div>       
-
-            <br></br>
-            {!isLoggedIn ? (
-                <Link href='/register'><button className="btn-primary">Create Account</button></Link>
-            ) : (
-                <div></div>
-            )}
+        //Pixabay. (2018, March 26). Food, Vegetable, In good health image. Free for use. [Photograph]. GinetteDorais. https://pixabay.com/photos/food-vegetable-in-good-health-fruit-3267619/
+        <div className="min-h-screen bg-cover bg-[radial-gradient(circle,rgba(31,41,55,0.9),rgba(31,41,55,0.4)),url('https://cdn.pixabay.com/photo/2018/03/27/22/21/food-3267619_1280.jpg')] flex flex-col">
+            <div className='flex-grow flex items-center justify-center py-16'>
+                <div className='bg-beige w-full mx-4 md:w-1/3 p-8 rounded-lg shadow-lg flex flex-col items-center'>
+                    <h1 className="text-center text-4xl mb-5">Welcome Back!</h1>
+                    {/* UPC Code Entry Form */}
+                    <div className="w-full">
+                        <div className='flex'>
+                            <UserLogin />
+                        </div>
+                        {!isLoggedIn ? (
+                            <div className='mt-8 text-center'>
+                                <p className='inline-block'>If you do not have an account, you can  </p>
+                                <Link href='/register' className='inline-block'><button className="btn-secondary">Register Now</button></Link></div>
+                        ) : (
+                            <div></div>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

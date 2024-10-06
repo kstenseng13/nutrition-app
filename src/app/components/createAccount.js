@@ -143,7 +143,7 @@ const CreateAccount = () => {
     return (
         <form role="form" aria-labelledby="register" onSubmit={handleSubmit}>
             <div>
-                <div className="inline-block mb-5 w-full xl:w-[49%]">
+                <div className="inline-block mb-5 w-full xl:w-[48%] mr-1">
                     <label htmlFor="firstName">First</label>
                     <input
                         type="text"
@@ -230,8 +230,7 @@ const CreateAccount = () => {
             </div>
 
             <div>
-                <label className="ms-2 text-sm font-medium">
-                    {/* add selections to user profile? */}
+                <label className="text-sm font-medium">
                     Select your Dietary Restrictions:
                 </label>
                 
@@ -243,13 +242,11 @@ const CreateAccount = () => {
                             id="lowSodium"
                             name="lowSodium"
                             type="checkbox"
-                            //required
                             aria-required="true"
                             checked={formData.lowSodium}
                             onChange={handleChange}
                         />
-                        <label htmlFor="lowSodium" className="ms-2 text-sm font-medium">
-                            {/* add selections to user profile? */}
+                        <label htmlFor="lowSodium" className="text-sm font-medium">
                             Low-Sodium
                         </label>
                     </div>
@@ -258,13 +255,11 @@ const CreateAccount = () => {
                             id="lowFat"
                             name="lowFat"
                             type="checkbox"
-                            //required
                             aria-required="true"
                             checked={formData.lowFat}
                             onChange={handleChange}
                         />
-                        <label htmlFor="lowFat" className="ms-2 text-sm font-medium ml-4">
-                        {/* add selections to user profile? */}
+                        <label htmlFor="lowFat" className="text-sm font-medium ml-4">
                             Low-Fat
                         </label>
                     </div>
@@ -282,9 +277,9 @@ const CreateAccount = () => {
                         checked={formData.terms}
                         onChange={handleChange}
                     />
-                    <label htmlFor="terms" className="ms-2 text-sm font-medium">
+                    <label htmlFor="terms" className="text-sm font-medium">
                     {/* make this direct to a terms and condition page eventually */}
-                    I agree with the <a href="/register" className="text-linkBlue hover:underline hover:text-gunmetal">terms and conditions</a>
+                    I agree with the <a href="/register" className="link">terms and conditions</a>
                     </label>
                 </div>
             </div>
