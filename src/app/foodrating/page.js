@@ -99,31 +99,21 @@ export default function FoodRatingPage() {
   }, [searchParams]);
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
+    <div className="py-8 text-center">
       <h1>Food Rating Results</h1>
 
       {/* Display UPC for debugging purposes */}
       <p>{upc} / {foodName} / Rates:</p>
 
       {/* Rating Box */}
-      <div
-        style={{
-          width: '300px',
-          height: '200px',
-          backgroundColor: ratingColor,
-          margin: '20px auto',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontSize: '24px',
-          color: 'black',
-          borderRadius: '8px',
-        }}
-      >
+      <div className="w-[300px] h-[200px] my-5 mx-auto flex justify-center items-center text-2xl text-black rounded-lg" style={{ backgroundColor: ratingColor }}>
         {ratingText}
       </div>
       {/* Nutrition Details */}
       <FoodDetails label={foodData} />
+      <div className='pt-8'>
+        <a href="/upcEntry" className='btn-primary'>Rate Another</a>
+      </div>
     </div>
   );
 }

@@ -27,12 +27,16 @@ body {
 }
 
 
-.btn-primary{
-  @apply text-white shadow-md bg-matcha hover:bg-matchaDark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center
+.btn-primary {
+  @apply text-white shadow-md bg-matcha hover:bg-matchaDark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mx-2
 }
 
 .btn-secondary {
-  @apply text-white shadow-md bg-copper hover:bg-copperDark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center
+  @apply text-white shadow-md bg-copper hover:bg-copperDark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mx-2
+}
+
+.link {
+  @apply text-linkBlue hover:underline hover:text-gunmetal;
 }
 
 
@@ -41,17 +45,95 @@ label {
   @apply block mb-2 text-sm font-medium
 }
 
-input[type='checkbox']{
-  @apply w-4 h-4 accent-matcha border border-gray-300 rounded bg-white shadow-sm
+input[type='checkbox'] {
+  @apply w-4 h-4 accent-matcha border border-gray-300 rounded bg-white shadow-sm mr-2
 }
 
+input[type='radio'] {
+  @apply w-4 h-4 shadow-sm mr-1 border border-gray-300 rounded-full;
+}
+
+input[type='radio']:checked {
+  @apply accent-matcha;
+}
 
 input,
 select {
-    @apply shadow-md bg-white border border-matcha text-sm leading-5 rounded-md block w-full;
+  @apply shadow-md bg-white border border-matcha text-sm leading-5 rounded-md block w-full;
 }
 
 input:focus,
 select:focus {
-    @apply ring ring-matcha border-matcha outline-2 outline-offset-2;
+  @apply ring ring-matcha border-matcha outline-2 outline-offset-2 outline-matchaDark;
+}
+
+select {
+  @apply shadow-md bg-white border border-matcha text-sm leading-5 rounded-md block w-full px-3 py-2 font-semibold;
+}
+
+select:focus {
+  @apply ring ring-matcha border-matcha outline-2 outline-offset-2 outline-matchaDark font-semibold;
+}
+
+/* Autofill Styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  @apply shadow-md bg-white text-black;
+  -webkit-box-shadow: 0 0 0px 1000px white inset;
+  -webkit-text-fill-color: black;
+}
+
+/* Small screens (below 767) */
+@media (max-width: 767px) {
+  body h1 {
+    font-weight: 600;
+    font-size: 2.15rem;
+    line-height: 2.75rem;
+  }
+
+  body h2 {
+    font-weight: 600;
+    font-size: 1.85rem;
+    line-height: 2.5rem;
+  }
+
+  body h3 {
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+  }
+
+  body h4 {
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 2.15rem;
+  }
+}
+
+/* Medium screens (768px and up) */
+@media (min-width: 768px) {
+  body h1 {
+    font-weight: 600;
+    font-size: 2.5rem;
+    line-height: 3.25rem;
+  }
+
+  body h2 {
+    font-weight: 600;
+    font-size: 2.15rem;
+    line-height: 2.75rem;
+  }
+
+  body h3 {
+    font-weight: 600;
+    font-size: 1.85rem;
+    line-height: 2.5rem;
+  }
+
+  body h4 {
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 2.25rem;
+  }
 }
