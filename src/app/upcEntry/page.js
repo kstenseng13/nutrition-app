@@ -47,50 +47,43 @@ export default function FoodCheckPage() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    console.log('Submitting form...'); // Debug log
 
     if (upc) {
       setError(null);  
 
-      console.log('isLoggedIn:', isLoggedIn);
-      console.log('userData:', userData);
-      console.log('selectedOption:', selectedOption);
+      // // If user is logged in, update the corresponding dietary preference
+      // if (isLoggedIn) {
+      //   const updatedUser = {
+      //     username: userData.username,  // Ensure you're getting the username from userData
+      //     lowFat: selectedOption === 'Low Fat',
+      //     lowSodium: selectedOption === 'Low Sodium',
+      //   };
+      //   console.log('Updated user data:', updatedUser); // Debug log
 
+      //   // Update the user context with the new dietary selection
+      //   login(updatedUser);  // This updates the context and sessionStorage
 
-      // If user is logged in, update the corresponding dietary preference
-      if (isLoggedIn) {
-        const updatedUser = {
-          username: userData.username,  // Ensure you're getting the username from userData
-          lowFat: selectedOption === 'Low Fat',
-          lowSodium: selectedOption === 'Low Sodium',
-        };
-        console.log('Updated user data:', updatedUser); // Debug log
-
-        // Update the user context with the new dietary selection
-        login(updatedUser);  // This updates the context and sessionStorage
-
-        try {
-          // Make the PUT request to update dietary preferences in the database
-          const response = await fetch('/api/putUpdateUser', {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedUser),
-          });
+      //   try {
+      //     // Make the PUT request to update dietary preferences in the database
+      //     const response = await fetch('/api/putUpdateUser', {
+      //       method: 'PUT',
+      //       headers: {
+      //         'Content-Type': 'application/json',
+      //       },
+      //       body: JSON.stringify(updatedUser),
+      //     });
   
-          if (!response.ok) {
-            throw new Error('Failed to update dietary preferences');
-          }
+      //     if (!response.ok) {
+      //       throw new Error('Failed to update dietary preferences');
+      //     }
   
-          const data = await response.json();
-          console.log(data.message); // Log success message or handle it as needed
-        } catch (error) {
-          console.error(error.message);
-          setError('Error updating dietary preferences: ' + error.message);
-        }
-      }
+      //     const data = await response.json();
+      //     console.log(data.message); // Log success message or handle it as needed
+      //   } catch (error) {
+      //     console.error(error.message);
+      //     setError('Error updating dietary preferences: ' + error.message);
+      //   }
+      // }
       router.push(`/foodrating?upc=${upc}`);  // Route to the food rating page
     }
   };
