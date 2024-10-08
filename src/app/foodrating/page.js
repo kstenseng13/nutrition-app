@@ -6,6 +6,7 @@ import FoodDetails from '../components/foodDetails';
 import RatingComp from '../components/ratingcomp';
 import NutritionLabel from '../data/nutritionlabel';
 import { useAuth } from '../context/userContext';
+import useSanitizedInput from '../hooks/useSanitizedInput';
 
 export default function FoodRatingPage() {
   const searchParams = useSearchParams();
@@ -15,6 +16,7 @@ export default function FoodRatingPage() {
   const [ratingText, setRatingText] = useState('');
   const [foodName, setFoodName] = useState();
   const { userData } = useAuth();
+  const { sanitizeInput } = useSanitizedInput();
 
   //food nutrition details
   const [foodData, setFoodData] = useState(null);
@@ -23,7 +25,8 @@ export default function FoodRatingPage() {
 
     const fetchData = async () => {
       const upcValue = searchParams.get('upc');
-      setUpc(upcValue);
+      const sanitizedUpc = sanitizeInput(upcValue);
+      setUpc(sanitizedUpc);
 
       //dietValue should be "Low Fat" or "Low Sodium" coming from the upcEntry page
       //pass this into the rating calculation alrogithm
