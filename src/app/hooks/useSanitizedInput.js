@@ -1,5 +1,3 @@
-import { useCallback } from 'react';
-
 const useSanitizedInput = () => {
 
     // Whitelist regex of alphanumerics and common punctuation.
