@@ -3,6 +3,11 @@ import NutritionLabel from '../data/nutritionlabel';
 import styles from './FoodDetails.module.css'; // Import the CSS module
 
 const FoodDetails = ({ label }) => {
+
+    if (!label) {
+        return <div className={styles.error}>Nutrition data is not available.</div>;
+    }
+
     const nutritionData = label.getData();
 
     return (
