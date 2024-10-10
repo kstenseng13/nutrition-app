@@ -7,6 +7,7 @@ import RatingComp from '../components/ratingcomp';
 import NutritionLabel from '../data/nutritionlabel';
 import { useAuth } from '../context/userContext';
 import useSanitizedInput from '../hooks/useSanitizedInput';
+import useFoodRating from '../hooks/useFoodRating';
 
 export default function FoodRatingPage() {
   const searchParams = useSearchParams();
@@ -17,12 +18,12 @@ export default function FoodRatingPage() {
   const [foodName, setFoodName] = useState();
   const { userData } = useAuth();
   const { sanitizeInput } = useSanitizedInput();
+  const { calculateRating } = useFoodRating();
 
   //food nutrition details
   const [foodData, setFoodData] = useState(null);
 
   useEffect(() => {
-
     const fetchData = async () => {
       const upcValue = searchParams.get('upc');
       const sanitizedUpc = sanitizeInput(upcValue);
@@ -33,6 +34,8 @@ export default function FoodRatingPage() {
       const dietValue = searchParams.get('diet');
       setDiet(dietValue);
 
+      if (!sanitizedUpc || !dietValue) return; // Return early if necessary values are not present
+
       //make api request to get food rating
 
       let url = '/api/getFoodData?upc=' + upcValue;
@@ -41,7 +44,6 @@ export default function FoodRatingPage() {
       try {
         const response = await fetch(url);
         _returnedData = await response.json();
-        console.log('_returnedData:', _returnedData);
       } catch (error) {
         console.error('Error:', error);
       }
@@ -55,9 +57,7 @@ export default function FoodRatingPage() {
         setFoodName("Food Not Found");
       }
       else {
-        console.log('Food Data:', _returnedData);
         //pull out the nutrition data from the response and set the state
-
         setFoodName(_returnedData.product.product_name);
 
         const nutritionData = {
@@ -83,30 +83,9 @@ export default function FoodRatingPage() {
         console.log('Nutrition Data:', nutritionData);
 
         setFoodData(new NutritionLabel(nutritionData));
-
-        //values from the nutrition data for the rating algorithm
-        console.log('Sodium:', nutritionData.sodium);
-        console.log('Total Fat:', nutritionData.totalFat);
-
-      }
-
-
-      // Set box color and text based on UPC value
-      if (upcValue === '1') {
-        setRatingColor('green');
-        setRatingText('GOOD');
-        setFoodName('Salad');
-      } else if (upcValue === '2') {
-        setRatingColor('yellow');
-        setRatingText('WARNING');
-        setFoodName('Pasta');
-      } else if (upcValue === '3') {
-        setRatingColor('red');
-        setRatingText('POOR');
-        setFoodName('Candy');
-      } else {
-        setRatingColor('gray');
-        setRatingText('Unknown Rating');
+        const { color, text } = calculateRating(dietValue, nutritionData.sodium, nutritionData.totalFat);
+        setRatingColor(color);
+        setRatingText(text);
       }
     };
 
@@ -118,14 +97,12 @@ export default function FoodRatingPage() {
     <div className="py-8 text-center">
       <h1>Food Rating Results</h1>
 
-      {/* Display UPC for debugging purposes */}
-      <br />
-      <h4>UPC: {upc}</h4>
-      <h4>{foodName}</h4>
-      <h4>Rating for Diet: {diet}</h4>
-
       {/* Rating Box */}
       <RatingComp color= {ratingColor} text={ratingText} />
+
+      <h4>Rating for Diet: {diet}</h4>
+      <h4>{foodName}</h4>
+      <h4 className='pb-4'>UPC: {upc}</h4>
 
       {/* Nutrition Details */}
       <FoodDetails label={foodData} />
