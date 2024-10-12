@@ -38,11 +38,38 @@ class NutritionLabel {
     }
   
     validateNumber(value) {
-      const num = Number(value);
+
+      let num = Number(value);
+
       if (Number.isNaN(num) || num < 0) {
         return "---";
       }
-      return Math.min(num, 999);
+
+      if (num === 0) {
+        return 0;
+      }
+
+      //limit to uner 1000
+      num =  Math.min(num, 9999);
+
+      if (num > 999) {
+        num = num.toFixed(0);
+      }
+      else if (num < 100) {
+        num = num.toFixed(2);
+      }
+      else {
+        num = num.toFixed(1);
+      }
+
+      //remove trailing zeros
+      num = num.replace(/0+$/, '');
+
+      //remove trailing decimal point
+      num = num.replace(/\.$/, '');
+
+      return num;
+
     }
   
     getData() {
