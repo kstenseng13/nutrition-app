@@ -106,6 +106,26 @@ export default function Details() {
         iron: -10000,
         potassium: -10000
     };
+
+    const mixedDecimalData = {
+        servingSize: "1 cup (240ml)",
+        servingsPerContainer: 2.5,
+        calories: 250.5,
+        totalFat: 8.5,
+        saturatedFat: 3.5234,
+        transFat: 0.523433,
+        cholesterol: 30.5,
+        sodium: 470.54444,
+        totalCarbohydrate: 31.5,
+        dietaryFiber: 4.50000000001,
+        totalSugars: 5.5,
+        addedSugars: 2.5,
+        protein: 5.512345,
+        vitaminD: 2.5,
+        calcium: 1260.53333,
+        iron: 13341.5,
+        potassium: 235.5
+    };
     
     
     const defaultLabel = new NutritionLabel();
@@ -114,6 +134,7 @@ export default function Details() {
     const veryLargeLabel = new NutritionLabel(veryLargeNumbers);
     const nanLabel = new NutritionLabel(nanData);
     const veryLargeNegLabel = new NutritionLabel(veryLargeNegNumbers);
+    const mixedDecimalLabel = new NutritionLabel(mixedDecimalData);
 
     return (
         <div>
@@ -140,6 +161,10 @@ export default function Details() {
 
             <h1 className={styles.centeredHeading}>Very Large Negative Numbers</h1>
             <FoodDetails label={veryLargeNegLabel} />
+            <br /><br />
+
+            <h1 className={styles.centeredHeading}>Mixed Decimal Data</h1>
+            <FoodDetails label={mixedDecimalLabel} />
             <br /><br />
         </div>
 
